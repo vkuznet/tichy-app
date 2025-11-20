@@ -1,0 +1,49 @@
+#/bin/bash
+
+# configure your ai directory
+DIR=/mnt/data1/vk/AI
+
+# DO NOT MODIFY below this line
+
+USER=tichy
+PASSWORD=Secret42
+LDIR=$DIR/logs
+mkdir -p $LDIR
+
+# check existing process
+if [ -f $LDIR/pdb.pid ]; then
+    PID=$(cat $LDIR/pdb.pid)
+    if ps -p $PID > /dev/null; then
+        echo "Postgres is running (PID $PID)"
+        exit 1
+    else
+        echo "Postgres is not running"
+    fi
+fi
+
+# remove previous databases
+echo "remove and recreate $DIR/postgres-data"
+rm -rf $DIR/postgres-data
+mkdir -p $DIR/postgres-data
+echo "remove and recreate $DIR/postgres-run"
+rm -rf $DIR/postgres-run
+mkdir -p $DIR/postgres-run
+
+# Start PostgresDB container
+echo "start PostgresDB apptainer..."
+apptainer exec \
+  --bind $DIR/postgres-data:/var/lib/postgresql/data \
+  --bind $DIR/postgres-run:/var/run/postgresql \
+  --env POSTGRES_USER=$USER \
+  --env POSTGRES_PASSWORD=$PASSWORD \
+  $DIR/images/pgvector_pg17.sif \
+  docker-entrypoint.sh postgres \
+  > $LDIR/pdb.log 2>&1 &
+
+# start tichy database
+echo "$DIR/tichy/tichy db up"
+$DIR/tichy/tichy db up
+
+# Save the PID of the last backgrounded process
+echo $! > $LDIR/pdb.pid
+echo "PostgresDB started with PID=`cat $LDIR/pdb.pid`"
