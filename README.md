@@ -59,7 +59,7 @@ apptainer pull llama_server_cuda.sif "docker://ghcr.io/ggerganov/llama.cpp:serve
 
 ---
 
-## 4. Start Services Using Shell Scripts
+### Start Services Using Shell Scripts
 
 The repository provides helper scripts for starting services with either Apptainer or Docker/Podman:
 
@@ -79,7 +79,7 @@ Use the scripts appropriate for your container runtime.
 
 ---
 
-## 5. Start Tichy Services
+###. Start Tichy Services
 
 Initialize the database:
 
