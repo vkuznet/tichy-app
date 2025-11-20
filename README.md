@@ -70,6 +70,13 @@ The repository provides helper scripts for starting services with either Apptain
 ---
 
 ### Start Tichy Services
+Clone tichy repository and build tichy:
+
+```
+git clone git@github.com:lechgu/tichy.git
+cd tichy
+make
+```
 
 Initialize the database:
 
@@ -77,10 +84,10 @@ Initialize the database:
 ./tichy db up
 ```
 
-Ingest documents:
+Ingest documents (currently only `*.md` and `*.txt` will be processed):
 
 ```bash
-./tichy ingest --source ./examples/insurellm/knowledge-base/ --mode text
+./tichy ingest --source /path/to/your/docs --mode text
 ```
 
 Start an interactive chat session:
