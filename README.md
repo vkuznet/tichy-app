@@ -61,9 +61,7 @@ apptainer pull llama_server_cuda.sif "docker://ghcr.io/ggerganov/llama.cpp:serve
 
 ### Start Services Using Shell Scripts
 
-The repository provides helper scripts for starting services with either Apptainer or Docker/Podman:
-
-### Apptainer-based scripts
+The repository provides helper scripts for starting services with either Apptainer:
 
 * `app_pdb.sh` – start PostgreSQL
 * `app_embeddings.sh` – start embeddings service
