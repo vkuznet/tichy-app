@@ -4,11 +4,15 @@
 # Controls start/stop/restart/status in correct dependency order.
 #
 
-# configure your ai directory
-DIR=/mnt/data1/vk/AI
-
-# DO NOT MODIFY below this line
-
+# ------------------------------------------------------------
+# Validate AI directory
+# ------------------------------------------------------------
+if [ -z "${AIDIR:-}" ]; then
+    echo "[ERROR] AIDIR environment variable is not set."
+    echo "        Please export AIDIR=/path/to/ai before running services"
+    exit 1
+fi
+DIR=$ADIR
 LDIR=$DIR/logs
 
 SCRIPTS=(

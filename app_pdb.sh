@@ -1,12 +1,16 @@
 #/bin/bash
 
-# configure your ai directory
-DIR=/mnt/data1/vk/AI
-
-# DO NOT MODIFY below this line
-
-USER=tichy
-PASSWORD=Secret42
+# ------------------------------------------------------------
+# Validate AI directory
+# ------------------------------------------------------------
+if [ -z "${AIDIR:-}" ]; then
+    echo "[ERROR] AIDIR environment variable is not set."
+    echo "        Please export AIDIR=/path/to/ai before running services"
+    exit 1
+fi
+DIR=$ADIR
+USER=`cat $DIR/pdb_credentials | grep USERNAME | sed -e "s,USERNAME:,,g"`
+PASSWORD=`cat $DIR/pdb_credentials | grep PASSWORD | sed -e "s,PASSWORD:,,g"`
 LDIR=$DIR/logs
 mkdir -p $LDIR
 

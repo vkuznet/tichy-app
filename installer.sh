@@ -19,8 +19,8 @@ echo "[INFO] Using AIDIR = $DIR"
 # ------------------------------------------------------------
 # Required checksums files
 # ------------------------------------------------------------
-MODEL_CHECKSUMS="$DIR/checksums/models.sha256"
-IMAGE_CHECKSUMS="$DIR/checksums/images.sha256"
+MODEL_CHECKSUMS="$PWD/checksums"
+IMAGE_CHECKSUMS="$PWD/checksums"
 
 if [ ! -f "$MODEL_CHECKSUMS" ]; then
     echo "[ERROR] Missing file: $MODEL_CHECKSUMS"
@@ -89,7 +89,7 @@ echo "[INFO] Preparing directory structure..."
 mkdir -p "$DIR/logs"
 mkdir -p "$DIR/images"
 mkdir -p "$DIR/models/llama"
-mkdir -p "$DIR/checksums"
+mkdir -p "$DIR/docs"
 
 # ------------------------------------------------------------
 # Model downloads (GGUF files)
