@@ -8,7 +8,7 @@ if [ -z "${AIDIR:-}" ]; then
     echo "        Please export AIDIR=/path/to/ai before running services"
     exit 1
 fi
-DIR=$ADIR
+DIR=$AIDIR
 USER=`cat $DIR/pdb_credentials | grep USERNAME | sed -e "s,USERNAME:,,g"`
 PASSWORD=`cat $DIR/pdb_credentials | grep PASSWORD | sed -e "s,PASSWORD:,,g"`
 LDIR=$DIR/logs

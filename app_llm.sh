@@ -8,7 +8,7 @@ if [ -z "${AIDIR:-}" ]; then
     echo "        Please export AIDIR=/path/to/ai before running services"
     exit 1
 fi
-DIR=$ADIR
+DIR=$AIDIR
 LDIR=$DIR/logs
 mkdir -p $LDIR
 
