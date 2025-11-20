@@ -23,7 +23,10 @@ if [ -f $LDIR/srv.pid ]; then
     fi
 fi
 
-./tichy serve > $LDIR/srv.log 2>&1 &
+# we should start tichy server from AIDIR where .env file resides
+cd $DIR
+$DIR/tichy/tichy serve > $LDIR/srv.log 2>&1 &
+cd -
 
 # Save the PID of the last backgrounded process
 echo $! > $LDIR/srv.pid

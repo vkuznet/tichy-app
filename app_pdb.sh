@@ -49,7 +49,10 @@ echo "wait for PDB to start..."
 sleep 10
 tail $LDIR/pdb.log
 echo "$DIR/tichy/tichy db up"
+# we should start db from AIDIR where .env file resides
+cd $DIR
 $DIR/tichy/tichy db up
+cd -
 
 # Save the PID of the last backgrounded process
 echo $! > $LDIR/pdb.pid
