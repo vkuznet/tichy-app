@@ -162,6 +162,9 @@ CHUNK_OVERLAP=100
 TOP_K=10
 EOF
 
+# copy AI prompt file
+cp system_prompt_template.txt $DIR/system_prompt_template.txt
+
 # ------------------------------------------------------------
 # PDB credentials
 # ------------------------------------------------------------
