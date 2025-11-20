@@ -46,7 +46,7 @@ apptainer exec \
 
 # start tichy database
 echo "wait for PDB to start..."
-sleep 10
+sleep 5
 tail $LDIR/pdb.log
 echo "$DIR/tichy/tichy db up"
 # we should start db from AIDIR where .env file resides
