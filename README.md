@@ -79,7 +79,7 @@ Use the scripts appropriate for your container runtime.
 
 ---
 
-###. Start Tichy Services
+### Start Tichy Services
 
 Initialize the database:
 
