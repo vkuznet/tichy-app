@@ -45,6 +45,9 @@ apptainer exec \
   > $LDIR/pdb.log 2>&1 &
 
 # start tichy database
+echo "wait for PDB to start..."
+sleep 10
+tail $LDIR/pdb.log
 echo "$DIR/tichy/tichy db up"
 $DIR/tichy/tichy db up
 
