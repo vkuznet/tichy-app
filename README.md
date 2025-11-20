@@ -69,14 +69,6 @@ The repository provides helper scripts for starting services with either Apptain
 * `app_embeddings.sh` – start embeddings service
 * `app_llm.sh` – start LLM service
 
-### Docker/Podman-based scripts
-
-* `run_postgresdb.sh` – start PostgreSQL
-* `run_embeddings.sh` – start embeddings service
-* `run_llm.sh` – start LLM service
-
-Use the scripts appropriate for your container runtime.
-
 ---
 
 ### Start Tichy Services
