@@ -1,6 +1,7 @@
 # Deployment on VM
 
-This document outlines all steps required to deploy the **tichy** service to a
+This document outlines all steps required to deploy the
+[**tichy**](https://github.com/lechgu/tichy) service to a
 stand-alone virtual machine.
 
 ---
