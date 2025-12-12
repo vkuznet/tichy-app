@@ -119,7 +119,6 @@ check_vdb() {
 
     # Get VECTORDB_BACKEND value (strip spaces and CRLF)
     VECTORDB_BACKEND=$(grep -E '^VECTORDB_BACKEND=' $AENV | cut -d '=' -f2 | tr -d ' \r')
-    echo "Using vector db: $VECTORDB_BACKEND"
 
     # check if VECTORDB_BACKEND is properly set
     if [[ -z "$VECTORDB_BACKEND" ]]; then
@@ -140,6 +139,15 @@ status_all() {
     check_vdb
     for item in "${SCRIPTS[@]}"; do
         IFS=":" read script pidfile name <<< "$item"
+        # Database backend switch
+        if [[ "$script" == "app_qdr.sh" && "$VECTORDB_BACKEND" != "qdrant" ]]; then
+            echo "Skipping $name (not selected backend)"
+            continue
+        fi
+        if [[ "$script" == "app_pdb.sh" && "$VECTORDB_BACKEND" != "pgvector" ]]; then
+            echo "Skipping $name (not selected backend)"
+            continue
+        fi
         pid=$(get_pid "$LDIR/$pidfile")
         if is_running "$pid"; then
             echo "[RUNNING] $name (PID $pid)"
