@@ -1,8 +1,9 @@
 #!/bin/bash
 #
 # Manager for Apptainer-based apps:
+#   app_qdr.sh
 #   app_pdb.sh
-#   app_embeddings.sh
+#   app_emb.sh
 #   app_llm.sh
 #
 # Usage:
@@ -14,12 +15,16 @@
 #
 # Apps must write PID to logs/<name>.pid
 #
+if [ -z "${AIDIR:-}" ]; then
+    echo "[ERROR] AIDIR environment variable is not set."
+    echo "        Please export AIDIR=/path/to/ai before running services"
+    exit 1
+fi
 
-BASE_DIR="/mnt/data1/vk/AI"
-LOG_DIR="${BASE_DIR}/logs"
-APP_DIR="$(dirname "$0")"      # directory where app scripts live
+LOG_DIR="${AIDIR}/logs"
+APP_DIR="${AIDIR}/tichy-app"      # directory where app scripts live
 
-APPS=("pdb" "emb" "llm")
+APPS=("qdr" "pdb" "emb" "llm")
 
 mkdir -p "$LOG_DIR"
 

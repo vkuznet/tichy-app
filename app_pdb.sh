@@ -13,10 +13,12 @@ USER=`cat $DIR/pdb_credentials | grep USERNAME | sed -e "s,USERNAME:,,g"`
 PASSWORD=`cat $DIR/pdb_credentials | grep PASSWORD | sed -e "s,PASSWORD:,,g"`
 LDIR=$DIR/logs
 mkdir -p $LDIR
+APID=$LDIR/pdb.pid
+ALOG=$LDIR/pdb.log
 
 # check existing process
-if [ -f $LDIR/pdb.pid ]; then
-    PID=$(cat $LDIR/pdb.pid)
+if [ -f $APID ]; then
+    PID=$(cat $APID)
     if ps -p $PID > /dev/null; then
         echo "Postgres is running (PID $PID)"
         exit 1
@@ -27,10 +29,10 @@ fi
 
 # remove previous databases
 echo "remove and recreate $DIR/postgres-data"
-rm -rf $DIR/postgres-data
+#rm -rf $DIR/postgres-data
 mkdir -p $DIR/postgres-data
 echo "remove and recreate $DIR/postgres-run"
-rm -rf $DIR/postgres-run
+#rm -rf $DIR/postgres-run
 mkdir -p $DIR/postgres-run
 
 # Start PostgresDB container
@@ -42,12 +44,12 @@ apptainer exec \
   --env POSTGRES_PASSWORD=$PASSWORD \
   $DIR/images/pgvector_pg17.sif \
   docker-entrypoint.sh postgres \
-  > $LDIR/pdb.log 2>&1 &
+  > $APID 2>&1 &
 
 # start tichy database
 echo "wait for PDB to start..."
 sleep 5
-tail $LDIR/pdb.log
+tail $ALOG
 echo "$DIR/tichy/tichy db up"
 # we should start db from AIDIR where .env file resides
 cd $DIR
@@ -55,5 +57,5 @@ $DIR/tichy/tichy db up
 cd -
 
 # Save the PID of the last backgrounded process
-echo $! > $LDIR/pdb.pid
-echo "PostgresDB started with PID=`cat $LDIR/pdb.pid`"
+echo $! > $APID
+echo "PostgresDB started with PID=`cat $APID`"

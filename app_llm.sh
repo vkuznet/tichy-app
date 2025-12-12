@@ -11,10 +11,12 @@ fi
 DIR=$AIDIR
 LDIR=$DIR/logs
 mkdir -p $LDIR
+APID=$LDIR/llm.pid
+ALOG=$LDIR/llm.log
 
 # check existing process
-if [ -f $LDIR/llm.pid ]; then
-    PID=$(cat $LDIR/llm.pid)
+if [ -f $APID ]; then
+    PID=$(cat $APID)
     if ps -p $PID > /dev/null; then
         echo "LLM server is running (PID $PID)"
         exit 1
@@ -55,8 +57,8 @@ apptainer exec --nv \
   --port "$CONTAINER_PORT" \
   --ctx-size "$CTX_SIZE" \
   --n-gpu-layers "$GPU_LAYERS" \
-  > $LDIR/llm.log 2>&1 &
+  > $ALOG 2>&1 &
 
 # Save the PID of the last backgrounded process
-echo $! > $LDIR/llm.pid
-echo "LLM server is running with PID=`cat $LDIR/llm.pid`"
+echo $! > $APID
+echo "LLM server is running with PID=`cat $APID`"

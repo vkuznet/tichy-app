@@ -17,6 +17,7 @@ LDIR=$DIR/logs
 
 SCRIPTS=(
     "app_pdb.sh:pdb.pid:Postgres"
+    "app_qdr.sh:qdr.pid:Qdrant"
     "app_emb.sh:emb.pid:Embeddings"
     "app_llm.sh:llm.pid:LLM"
     "app_srv.sh:srv.pid:TichyServer"
@@ -95,6 +96,30 @@ stop_service() {
     echo "[OK] $name force stopped"
 }
 
+check_vdb() {
+    # Check for .env file
+    if [[ ! -f ".env" ]]; then
+        echo "ERROR: .env file not found. Cannot determine VECTORDB_BACKEND."
+        exit 1
+    fi
+
+    # Get VECTORDB_BACKEND value (strip spaces and CRLF)
+    VECTORDB_BACKEND=$(grep -E '^VECTORDB_BACKEND=' .env | cut -d '=' -f2 | tr -d ' \r')
+
+    # check if VECTORDB_BACKEND is properly set
+    if [[ -z "$VECTORDB_BACKEND" ]]; then
+        echo "ERROR: VECTORDB_BACKEND is not set in .env (expected: qdrant or pgvector)."
+        exit 1
+    fi
+
+    if [[ "$VECTORDB_BACKEND" != "qdrant" && "$VECTORDB_BACKEND" != "pgvector" ]]; then
+        echo "ERROR: Invalid VECTORDB_BACKEND: $VECTORDB_BACKEND (expected: qdrant or pgvector)."
+        exit 1
+    fi
+
+    echo "Using VECTORDB_BACKEND=$VECTORDB_BACKEND"
+}
+
 status_all() {
     echo "=== STATUS ==="
     for item in "${SCRIPTS[@]}"; do
@@ -109,18 +134,45 @@ status_all() {
 }
 
 start_all() {
+    echo "=== Check VECTORDB_BACKEND ==="
+    check_vdb
+    VECTORDB_BACKEND=$(grep -E '^VECTORDB_BACKEND=' .env | cut -d '=' -f2 | tr -d ' \r')
     echo "=== STARTING ALL SERVICES ==="
     for item in "${SCRIPTS[@]}"; do
         IFS=":" read script pidfile name <<< "$item"
+        # Database backend switch
+        if [[ "$script" == "app_qdr.sh" && "$VECTORDB_BACKEND" != "qdrant" ]]; then
+            echo "Skipping $name (not selected backend)"
+            continue
+        fi
+        if [[ "$script" == "app_pdb.sh" && "$VECTORDB_BACKEND" != "pgvector" ]]; then
+            echo "Skipping $name (not selected backend)"
+            continue
+        fi
+
+        # start other services
         start_service "$script" "$LDIR/$pidfile" "$name"
     done
 }
 
 stop_all() {
+    echo "=== Check VECTORDB_BACKEND ==="
+    check_vdb
+    VECTORDB_BACKEND=$(grep -E '^VECTORDB_BACKEND=' .env | cut -d '=' -f2 | tr -d ' \r')
     echo "=== STOPPING ALL SERVICES ==="
     # stop in reverse order
     for (( i=${#SCRIPTS[@]}-1; i>=0; i-- )); do
         IFS=":" read script pidfile name <<< "${SCRIPTS[$i]}"
+        # Database backend switch
+        if [[ "$script" == "app_qdr.sh" && "$VECTORDB_BACKEND" != "qdrant" ]]; then
+            echo "Skipping $name (not selected backend)"
+            continue
+        fi
+        if [[ "$script" == "app_pdb.sh" && "$VECTORDB_BACKEND" != "pgvector" ]]; then
+            echo "Skipping $name (not selected backend)"
+            continue
+        fi
+
         stop_service "$LDIR/$pidfile" "$name"
     done
 }

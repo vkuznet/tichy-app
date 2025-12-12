@@ -11,10 +11,12 @@ fi
 DIR=$AIDIR
 LDIR=$DIR/logs
 mkdir -p $LDIR
+APID=$LDIR/emb.pid
+ALOG=$LDIR/emb.log
 
 # check existing process
-if [ -f $LDIR/emb.pid ]; then
-    PID=$(cat $LDIR/emb.pid)
+if [ -f $APID ]; then
+    PID=$(cat $APID)
     if ps -p $PID > /dev/null; then
         echo "LLM embeddings is running (PID $PID)"
         exit 1
@@ -53,8 +55,8 @@ apptainer exec --nv \
   --port "$CONTAINER_PORT" \
   --ctx-size "$CTX_SIZE" \
   --embedding \
-  > $LDIR/emb.log 2>&1 &
+  > $ALOG 2>&1 &
 
 # Save the PID of the last backgrounded process
-echo $! > $LDIR/emb.pid
-echo "LLM embeddings is running with PID=`cat $LDIR/emb.pid`"
+echo $! > $APID
+echo "LLM embeddings is running with PID=`cat $APID`"

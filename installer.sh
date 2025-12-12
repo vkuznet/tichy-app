@@ -150,7 +150,7 @@ fi
 # ------------------------------------------------------------
 echo "[INFO] Creating .env config..."
 
-cat > "$DIR/.env" << EOF
+cat > "$DIR/.env.pdb" << EOF
 PORT=7070
 LOG_LEVEL=debug
 DATABASE_URL=postgres://${USERNAME}:${PASSWORD}@localhost:5432/tichy?sslmode=disable
@@ -160,6 +160,26 @@ SYSTEM_PROMPT_TEMPLATE=$DIR/system_prompt_template.txt
 CHUNK_SIZE=500
 CHUNK_OVERLAP=100
 TOP_K=10
+VECTORDB_BACKEND=pgvector
+EOF
+
+cat > "$DIR/.env.qdrant" << EOF
+PORT=7070
+LOG_LEVEL=debug
+LLM_SERVER_URL=http://localhost:8180
+EMBEDDING_SERVER_URL=http://localhost:8181
+SYSTEM_PROMPT_TEMPLATE=$DIR/system_prompt_template.txt
+CHUNK_SIZE=500
+CHUNK_OVERLAP=100
+TOP_K=10
+
+# --- Vector DB backend ---
+VECTORDB_BACKEND=qdrant
+
+# --- Qdrant specific ---
+QDRANT_COLLECTION=foxden
+QDRANT_HOST=localhost
+QDRANT_PORT=7334
 EOF
 
 # copy AI prompt file
@@ -182,13 +202,17 @@ echo "================================================="
 echo "AI llama models     : $(ls $DIR/models/llama)"
 echo "Apptainer images    : $(ls $DIR/images)"
 echo "Tichy tool          : $(ls $DIR/tichy/tichy)"
-echo ".env                : $DIR/.env"
+echo "Qdrant environment  : $DIR/.env.qdrant"
+echo "Postgres environment: $DIR/.env.pdb"
 echo "PDB credentials     : $DIR/pdb_credentials"
 echo "AI prompt definition: $DIR/system_prompt_template.txt"
 echo "Management script   : $DIR/app_manage.sh"
 echo "Start AI services   : $DIR/app_manage.sh start"
 echo "Follow up actions   : place your *.md or *.txt files into $DIR/docs and ingest them"
 echo "  $DIR/tichy/tichy ingest --source $DIR/docs --mode text"
-echo "================================================="
+echo "==="
+echo "To start AI chatbot you MUST choose to use either Postgres or Qdrant backend"
+echo "Either link or copy corrensponding environment file to .env"
+echo "And, then start services via app_manage.sh script"
 echo
 echo "[OK] Everything is installed successfully."
