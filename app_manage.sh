@@ -14,6 +14,13 @@ if [ -z "${AIDIR:-}" ]; then
 fi
 DIR=$AIDIR
 LDIR=$DIR/logs
+MDIR=$AIDIR/tichy-app
+if [ ! -d "$MDIR" ]; then
+  echo "Directory $MDIR does not exist, please clone it as following"
+  echo "cd $DIR"
+  echo "git clone git@github.com:vkuznet/tichy-app.git"
+  exit 1
+fi
 
 # use local .env file
 AENV=$PWD/.env
@@ -68,8 +75,8 @@ start_service() {
         return
     fi
 
-    echo "Starting $name..."
-    bash "$script"
+    echo "Starting $name via $MDIR/$script"
+    bash "$MDIR/$script"
 
     sleep 2
 
