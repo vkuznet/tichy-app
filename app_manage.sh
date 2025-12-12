@@ -26,9 +26,12 @@ fi
 AENV=$PWD/.env
 
 # overwrite local .env if AIENV is set
-if [ -n "$AIENV" ]; then
-  AENV=$AIENV
+if [ -n "$AIENV" ] && [ -f "$AIENV" ]; then
+    AENV="$AIENV"
+elif [ -f "$AIDIR/.env" ]; then
+    AENV="$AIDIR/.env"
 fi
+
 if [ -z "${AENV}" ] && [ ! -f ${AENV} ]; then
     echo "[ERROR] AIENV environment variable is not set and neither $PWD/.env file found"
     echo "        Please export AIENV=/path/.env before running services"
