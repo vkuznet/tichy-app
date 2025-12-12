@@ -105,6 +105,7 @@ check_vdb() {
 
     # Get VECTORDB_BACKEND value (strip spaces and CRLF)
     VECTORDB_BACKEND=$(grep -E '^VECTORDB_BACKEND=' .env | cut -d '=' -f2 | tr -d ' \r')
+    echo "Using vector db: $VECTORDB_BACKEND"
 
     # check if VECTORDB_BACKEND is properly set
     if [[ -z "$VECTORDB_BACKEND" ]]; then
@@ -122,6 +123,7 @@ check_vdb() {
 
 status_all() {
     echo "=== STATUS ==="
+    check_vdb
     for item in "${SCRIPTS[@]}"; do
         IFS=":" read script pidfile name <<< "$item"
         pid=$(get_pid "$LDIR/$pidfile")
