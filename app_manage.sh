@@ -35,6 +35,7 @@ if [ -z "${AENV}" ] && [ ! -f ${AENV} ]; then
     exit 1
 fi
 echo "Using AIENV=$AENV environment file"
+export TICHY_ENV=$AENV
 
 SCRIPTS=(
     "app_emb.sh:emb.pid:Embeddings"
@@ -76,6 +77,9 @@ start_service() {
     fi
 
     echo "Starting $name via $MDIR/$script"
+    if [[ "$script" == "app_srv.sh" ]]; then
+      # we need to start tichy server in directory which has .env file
+    fi
     bash "$MDIR/$script"
 
     sleep 2
