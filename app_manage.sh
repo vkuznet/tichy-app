@@ -12,11 +12,6 @@ if [ -z "${AIDIR:-}" ]; then
     echo "        Please export AIDIR=/path/to/ai before running services"
     exit 1
 fi
-if [ -z "${AIENV:$PWD/.env}" ]; then
-    echo "[ERROR] AIENV environment variable is not set."
-    echo "        Please export AIENV=/path/.env before running services"
-    exit 1
-fi
 DIR=$AIDIR
 LDIR=$DIR/logs
 
@@ -26,6 +21,11 @@ AENV=$PWD/.env
 # overwrite local .env if AIENV is set
 if [ -n "$AIENV" ]; then
   AENV=$AIENV
+fi
+if [ -z "${AENV}" ] && [ ! -f ${AENV} ]; then
+    echo "[ERROR] AIENV environment variable is not set and neither $PWD/.env file found"
+    echo "        Please export AIENV=/path/.env before running services"
+    exit 1
 fi
 echo "Using AIENV=$AENV environment file"
 
