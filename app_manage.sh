@@ -12,8 +12,22 @@ if [ -z "${AIDIR:-}" ]; then
     echo "        Please export AIDIR=/path/to/ai before running services"
     exit 1
 fi
+if [ -z "${AIENV:$PWD/.env}" ]; then
+    echo "[ERROR] AIENV environment variable is not set."
+    echo "        Please export AIENV=/path/.env before running services"
+    exit 1
+fi
 DIR=$AIDIR
 LDIR=$DIR/logs
+
+# use local .env file
+AENV=$PWD/.env
+
+# overwrite local .env if AIENV is set
+if [ -n "$AIENV" ]; then
+  AENV=$AIENV
+fi
+echo "Using AIENV=$AENV environment file"
 
 SCRIPTS=(
     "app_pdb.sh:pdb.pid:Postgres"
@@ -97,19 +111,19 @@ stop_service() {
 }
 
 check_vdb() {
-    # Check for .env file
-    if [[ ! -f ".env" ]]; then
-        echo "ERROR: .env file not found. Cannot determine VECTORDB_BACKEND."
+    # Check for AENV file
+    if [[ ! -f "$AENV" ]]; then
+        echo "ERROR: $AENV file not found. Cannot determine VECTORDB_BACKEND."
         exit 1
     fi
 
     # Get VECTORDB_BACKEND value (strip spaces and CRLF)
-    VECTORDB_BACKEND=$(grep -E '^VECTORDB_BACKEND=' .env | cut -d '=' -f2 | tr -d ' \r')
+    VECTORDB_BACKEND=$(grep -E '^VECTORDB_BACKEND=' $AENV | cut -d '=' -f2 | tr -d ' \r')
     echo "Using vector db: $VECTORDB_BACKEND"
 
     # check if VECTORDB_BACKEND is properly set
     if [[ -z "$VECTORDB_BACKEND" ]]; then
-        echo "ERROR: VECTORDB_BACKEND is not set in .env (expected: qdrant or pgvector)."
+        echo "ERROR: VECTORDB_BACKEND is not set in $AENV (expected: qdrant or pgvector)."
         exit 1
     fi
 
@@ -138,7 +152,7 @@ status_all() {
 start_all() {
     echo "=== Check VECTORDB_BACKEND ==="
     check_vdb
-    VECTORDB_BACKEND=$(grep -E '^VECTORDB_BACKEND=' .env | cut -d '=' -f2 | tr -d ' \r')
+    VECTORDB_BACKEND=$(grep -E '^VECTORDB_BACKEND=' $AENV | cut -d '=' -f2 | tr -d ' \r')
     echo "=== STARTING ALL SERVICES ==="
     for item in "${SCRIPTS[@]}"; do
         IFS=":" read script pidfile name <<< "$item"
@@ -160,7 +174,7 @@ start_all() {
 stop_all() {
     echo "=== Check VECTORDB_BACKEND ==="
     check_vdb
-    VECTORDB_BACKEND=$(grep -E '^VECTORDB_BACKEND=' .env | cut -d '=' -f2 | tr -d ' \r')
+    VECTORDB_BACKEND=$(grep -E '^VECTORDB_BACKEND=' $AENV | cut -d '=' -f2 | tr -d ' \r')
     echo "=== STOPPING ALL SERVICES ==="
     # stop in reverse order
     for (( i=${#SCRIPTS[@]}-1; i>=0; i-- )); do
