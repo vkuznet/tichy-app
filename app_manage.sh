@@ -37,10 +37,10 @@ fi
 echo "Using AIENV=$AENV environment file"
 
 SCRIPTS=(
-    "app_pdb.sh:pdb.pid:Postgres"
-    "app_qdr.sh:qdr.pid:Qdrant"
     "app_emb.sh:emb.pid:Embeddings"
     "app_llm.sh:llm.pid:LLM"
+    "app_pdb.sh:pdb.pid:Postgres"
+    "app_qdr.sh:qdr.pid:Qdrant"
     "app_srv.sh:srv.pid:TichyServer"
 )
 
