@@ -36,6 +36,9 @@ if [ -z "${AENV}" ] && [ ! -f ${AENV} ]; then
 fi
 echo "Using AIENV=$AENV environment file"
 export TICHY_ENV=$AENV
+if [ -z "$SYSTEM_PROMPT_TEMPLATE" ]; then
+  export SYSTEM_PROMPT_TEMPLATE=$MDIR/system_prompt_template.txt
+fi
 
 SCRIPTS=(
     "app_emb.sh:emb.pid:Embeddings"
