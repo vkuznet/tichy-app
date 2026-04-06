@@ -40,7 +40,7 @@ fi
 echo "Using AIENV=$AENV environment file"
 export TICHY_ENV=$AENV
 if [ -z "$SYSTEM_PROMPT_TEMPLATE" ]; then
-  export SYSTEM_PROMPT_TEMPLATE=$MDIR/system_prompt_template.txt
+  export SYSTEM_PROMPT_TEMPLATE=$ADIR/tichy/chess_prompt.txt
 fi
 
 SCRIPTS=(
@@ -78,7 +78,7 @@ start_service() {
 
     local pid=$(get_pid "$pidfile")
     if is_running "$pid"; then
-        echo "[OK] $name already running (PID $pid)"
+        echo "[OK] $name already running PID $pid"
         return
     fi
 
@@ -89,7 +89,7 @@ start_service() {
 
     pid=$(get_pid "$pidfile")
     if is_running "$pid"; then
-        echo "[OK] $name started (PID $pid)"
+        echo "[OK] $name started PID $pid"
     else
         echo "[ERROR] $name failed to start"
     fi
@@ -105,7 +105,7 @@ stop_service() {
         return
     fi
 
-    echo "Stopping $name (PID $pid)..."
+    echo "Stopping $name PID $pid..."
     kill "$pid"
 
     # Wait up to 10 seconds
@@ -164,7 +164,7 @@ status_all() {
         fi
         pid=$(get_pid "$LDIR/$pidfile")
         if is_running "$pid"; then
-            echo "[RUNNING] $name (PID $pid)"
+            echo "[RUNNING] $name PID $pid"
         else
             echo "[STOPPED] $name"
         fi
