@@ -23,7 +23,7 @@ if [ ! -d "$MDIR" ]; then
 fi
 
 # use local .env file
-AENV=$PWD/.env
+AENV=$AIDIR/.env
 
 # overwrite local .env if AIENV is set
 if [ -n "$AIENV" ] && [ -f "$AIENV" ]; then
@@ -39,8 +39,10 @@ if [ -z "${AENV}" ] && [ ! -f ${AENV} ]; then
 fi
 echo "Using AIENV=$AENV environment file"
 export TICHY_ENV=$AENV
+SYSTEM_PROMPT_TEMPLATE=`grep SYSTEM_PROMPT_TEMPLATE $TICHY_ENV`
 if [ -z "$SYSTEM_PROMPT_TEMPLATE" ]; then
-  export SYSTEM_PROMPT_TEMPLATE=$ADIR/tichy/chess_prompt.txt
+    export SYSTEM_PROMPT_TEMPLATE=$AIDIR/tichy/chess_prompt.txt
+    echo "no SYSTEM_PROMPT_TEMPLATE found will use $SYSTEM_PROMPT_TEMPLATE"
 fi
 
 SCRIPTS=(
@@ -83,7 +85,7 @@ start_service() {
     fi
 
     echo "Starting $name via $MDIR/$script"
-    bash "$MDIR/$script"
+    "$MDIR/$script"
 
     sleep 2
 
